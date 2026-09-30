@@ -217,6 +217,50 @@ textarea{height:120px;padding:10px 12px;font:13px/1.4 var(--mono);resize:vertica
 .laddr{width:100%;padding:11px 14px;border-top:1px solid var(--line);text-align:left;color:var(--accent);font-weight:600;font-size:14px;display:flex;gap:8px;align-items:center}
 .laddr svg{width:16px;height:16px}
 
+/* Compact today */
+.strip{width:100%;display:flex;align-items:center;gap:10px;margin-top:4px;padding:8px 10px 8px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;text-align:left;font-size:13px;color:var(--muted)}
+.strip .s-w{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .s-p{color:var(--ink);white-space:nowrap}
+.strip .s-p b{font:700 16px var(--mono)}
+.strip .pill{margin:0}
+.strip .s-d{font:700 12.5px var(--mono)}
+.strip .chev{width:16px;height:16px}
+#tab-today .chips{margin-top:8px}
+#tab-today .chip{height:30px;padding:0 11px;font-size:13px}
+#tab-today .cat{margin-top:6px;border-radius:12px}
+#tab-today .cat-h{padding:9px 12px}
+#tab-today .cat-h .nm{font-size:14.5px}
+#tab-today .row{grid-template-columns:22px minmax(0,1fr) auto 36px 30px;gap:8px;padding:4px 8px 4px 12px;min-height:40px}
+#tab-today .chk{width:22px;height:22px;border-radius:6px}
+#tab-today .chk svg{width:14px;height:14px}
+#tab-today .rmain{padding:6px 0;overflow:hidden}
+#tab-today .row .tname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;overflow-wrap:normal}
+#tab-today .tpts{font-size:12px}
+#tab-today .go{width:30px;height:30px;border-radius:8px}
+#tab-today .go svg{width:14px;height:14px}
+.tmin{font:700 11.5px var(--mono);color:var(--muted);white-space:nowrap}
+.tmin.un{color:var(--mid)}
+#tab-today .addrow{margin-top:10px}
+/* Task sheet time box */
+.tbox{padding:12px;border-radius:12px;background:var(--accent-soft);margin-bottom:10px}
+.tbox-l{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.tbox-l span{font-weight:500;color:var(--muted)}
+.tbox-r{display:flex;gap:8px}
+.tbox-r input{flex:1;background:var(--surface)}
+.tbox-r .btn{height:46px;padding:0 20px}
+.qk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.qk .chip{height:34px;padding:0;font-family:var(--mono);font-weight:700;font-size:12.5px;min-width:0}
+/* Dashboard extras */
+.goal{margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.goal b{font-family:var(--mono);color:var(--ink)}
+.cbars{margin-top:8px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:grid;gap:8px}
+.cb{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.cb-n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-b{height:8px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.cb-b i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.cb b{font:700 12.5px var(--mono)}
+nav.bn button{font-size:11px}
+
 /* Calendar */
 .cal{margin-top:8px;padding:12px 10px 10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;touch-action:pan-y}
 .cal-h{display:flex;align-items:center;gap:6px;padding:0 2px 10px}
@@ -270,7 +314,7 @@ textarea{height:120px;padding:10px 12px;font:13px/1.4 var(--mono);resize:vertica
 
 /* Nav */
 nav.bn{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.bn .wrap{display:grid;grid-template-columns:repeat(4,1fr);height:62px;padding:0 6px}
+nav.bn .wrap{display:grid;grid-template-columns:repeat(5,1fr);height:62px;padding:0 2px}
 nav.bn button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted);position:relative}
 nav.bn button svg{width:22px;height:22px}
 nav.bn button.on{color:var(--accent)}
@@ -327,6 +371,7 @@ nav.bn button .dot{position:absolute;top:10px;left:calc(50% + 8px);width:8px;hei
 
 <main class="wrap">
   <section class="tab on" id="tab-today"></section>
+  <section class="tab" id="tab-dash"></section>
   <section class="tab" id="tab-focus"></section>
   <section class="tab" id="tab-tasks">
     <div class="libbar">
@@ -351,6 +396,7 @@ nav.bn button .dot{position:absolute;top:10px;left:calc(50% + 8px);width:8px;hei
 <nav class="bn" aria-label="Sections">
   <div class="wrap">
     <button data-act="tab" data-tab="today" class="on"><span data-i="today"></span>Today</button>
+    <button data-act="tab" data-tab="dash"><span data-i="gauge"></span>Dashboard</button>
     <button data-act="tab" data-tab="focus"><span data-i="timer"></span>Focus<i class="dot" id="navdot" hidden></i></button>
     <button data-act="tab" data-tab="tasks"><span data-i="list"></span>Tasks</button>
     <button data-act="tab" data-tab="history"><span data-i="cal"></span>Progress</button>
@@ -406,6 +452,7 @@ const I = {
   sun: sv('<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>'),
   moon: sv('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'),
   today: sv('<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 4.5v3M4.6 9.6l2 1.6M19.4 9.6l-2 1.6"/>'),
+  gauge: sv('<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 17l4.5-5.5"/><circle cx="12" cy="17" r="1.3" fill="currentColor"/>'),
   timer: sv('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5l3-3M10 2.5h4"/>'),
   list: sv('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="3"/>'),
   chart: sv('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
@@ -446,7 +493,7 @@ const KEY = 'hisaab.v1';
 let S;
 const defaults = () => ({
   v:2,
-  settings:{ mpp:14.4, prod:75, avg:50, requireFocus:true, sound:true, vibrate:true, awake:true, theme:null },
+  settings:{ mpp:14.4, prod:75, avg:50, sound:true, vibrate:true, awake:true, theme:null },
   categories:[], tasks:[], cycles:[], timer:null,
   ui:{ open:{}, libOpen:{}, filter:'pending' }
 });
@@ -465,7 +512,7 @@ function load(){
       S = Object.assign(def, d);
       S.settings = Object.assign(defaults().settings, d.settings||{});
       S.ui = Object.assign(defaults().ui, d.ui||{});
-      migrate(d);
+      migrate(d); delete S.settings.requireFocus;
       S.cycles.forEach(c => { if (c.end && !c.final) { c.items = c.items || []; c.final = finalFromItems(c); } });
       return;
     } catch(e){}
@@ -534,7 +581,7 @@ function ent(c, id, create){
 const taskPts = t => t && t.minutes ? t.minutes / S.settings.mpp : 0;
 function earnedFor(t, e){
   if (!t.minutes || e.skip) return 0;
-  if (e.done && (!S.settings.requireFocus || e.via)) return taskPts(t);
+  if (e.done) return taskPts(t);
   return Math.min(e.sec/60, t.minutes) / S.settings.mpp;
 }
 function verdictOf(x){ const s = S.settings; return x >= s.prod ? 'productive' : x >= s.avg ? 'average' : 'waste'; }
@@ -737,31 +784,29 @@ function dialSVG(sum){
 }
 
 /* ---------- Today ---------- */
-function renderToday(){
-  const el = $('#tab-today'), c = cur();
-  const sub = $('#hdr-sub');
-  if (!c) {
-    sub.textContent = 'No day running';
-    const now = new Date();
-    el.innerHTML = `<div class="onb">
+function onbHTML(){
+  const now = new Date();
+  return `<div class="onb">
       <h2>When did you wake up?</h2>
-      <p>Your day runs from this wake-up until the next one you log, whether that's 22 hours or 26. Every task you finish on the focus timer adds points to it.</p>
-      <div class="two"><label class="f"><span>Date</span><input type="date" id="o-date" value="${ymd(now)}"></label>
-      <label class="f"><span>Time</span><input type="time" id="o-time" value="${hm(now)}"></label></div>
+      <p>Your day runs from this wake-up until the next one you log, whether that's 22 hours or 26. Every task you mark done adds its points to it.</p>
+      <div class="two"><label class="f"><span>Date</span><input type="date" class="o-date" value="${ymd(now)}"></label>
+      <label class="f"><span>Time</span><input type="time" class="o-time" value="${hm(now)}"></label></div>
       <button class="btn wide" data-act="start-day">${I.sunrise} Start my day</button>
       <div class="rules">
         <div><span>24 hours (1440 min)</span><b>${fp(ppd())} pts</b></div>
-        <div><span>Focused work</span><b>${fmtMpp(S.settings.mpp)} min = 1 pt</b></div>
+        <div><span>Task time</span><b>${fmtMpp(S.settings.mpp)} min = 1 pt</b></div>
         <div><span style="color:var(--good);font-weight:600">Productive</span><b>${S.settings.prod}–100</b></div>
         <div><span style="color:var(--mid);font-weight:600">Average</span><b>${S.settings.avg}–${S.settings.prod-1}</b></div>
         <div><span style="color:var(--bad);font-weight:600">Waste</span><b>0–${S.settings.avg-1}</b></div>
       </div></div>`;
-    return;
-  }
+}
+const scoreNum = x => (Math.round(x*10)/10).toFixed(1);
+function renderToday(){
+  const el = $('#tab-today'), c = cur();
+  const sub = $('#hdr-sub');
+  if (!c) { sub.textContent = 'No day running'; el.innerHTML = onbHTML(); return; }
   sub.textContent = 'Day of ' + fmtDate(c.start);
-  const sum = summarize(c), tasks = cycleTasks(c), elapsed = Date.now() - c.start;
-  const unit = 'pts';
-  const num = (Math.round(sum.score*10)/10).toFixed(1);
+  const sum = summarize(c), tasks = cycleTasks(c);
   const f = S.ui.filter;
   const counts = { pending:0, done:0, all:0, unmeasured:0 };
   const pass = (t, e) => {
@@ -771,33 +816,18 @@ function renderToday(){
     return true;
   };
   tasks.forEach(t => { const e = ent(c, t.id); counts.all++; if (e.done) counts.done++; else if (!e.skip) counts.pending++; if (!t.minutes && !e.skip) counts.unmeasured++; });
-
-  let h = `<div class="wake">
-      <div><div class="wk-l">Woke up</div><div class="wk-t">${fmtTime(c.start)}</div><div class="wk-d">${fmtDate(c.start)}</div></div>
-      <div><div class="wk-l">Awake for</div><div class="wk-t" data-elapsed>${fmtDur(elapsed)}</div><div class="wk-d">Until your next wake-up</div></div>
-      <div class="wk-b"><button class="btn sm ghost" data-act="wake-edit">Correct time</button><button class="btn sm" data-act="wake">${I.sunrise} New wake-up</button></div>
-    </div>`;
-  if (elapsed > 20*3600000) h += `<div class="banner"><span style="flex:1">This day has run ${fmtDur(elapsed)}. Log this morning's wake-up to close it and start fresh.</span></div>`;
-
-  const capLine = `${fp(sum.earned)} of ${fp(sum.cap)} pts ${sum.elapsed > 1440 ? 'this long day can hold' : 'a 24-hour day holds'}`;
-  h += `<div class="dialbox">
-      <div class="dial">${dialSVG(sum)}
-        <div class="dial-c"><div class="dial-n">${num}<small>${unit}</small></div>
-        <div class="dial-v v-${sum.verdict}">${VLABEL[sum.verdict]}</div></div>
-      </div>
-      <div class="dial-sub">${capLine}</div>
-      <div class="stats">
-        <div class="stat"><b>${sum.done}/${sum.total}</b><span>Tasks done</span></div>
-        <div class="stat"><b>${fmtDur(sum.sec*1000)}</b><span>Focused</span></div>
-        <div class="stat"><b>${fp(sum.possible)}</b><span>Pts assigned</span></div>
-      </div>
-    </div>`;
-
   const allOpen = S.categories.every(k => S.ui.open[k.id]);
-  h += `<div class="listbar"><h2>Today's tasks</h2><button class="txtbtn" data-act="toggle-all">${allOpen ? 'Collapse all' : 'Expand all'}</button></div>
+
+  let h = `<button class="strip" data-act="tab" data-tab="dash" aria-label="Open dashboard">
+      <span class="s-w">Woke ${fmtTime(c.start)}</span>
+      <span class="s-p"><b>${scoreNum(sum.score)}</b> pts</span>
+      <span class="pill v-${sum.verdict}">${VLABEL[sum.verdict]}</span>
+      <span class="s-d">${sum.done}/${sum.total}</span>
+      <span class="chev">${I.chev}</span></button>
     <div class="chips" role="tablist">
-      ${[['pending','To do'],['done','Done'],['unmeasured','Not measured'],['all','All']].map(([k,l]) =>
+      ${[['pending','To do'],['done','Done'],['unmeasured','No time'],['all','All']].map(([k,l]) =>
         `<button class="chip${f===k?' on':''}" data-act="filter" data-f="${k}" role="tab" aria-selected="${f===k}">${l}<em>${counts[k]}</em></button>`).join('')}
+      <button class="chip" data-act="toggle-all">${allOpen ? 'Collapse all' : 'Expand all'}</button>
     </div>`;
 
   let any = false;
@@ -820,29 +850,64 @@ function renderToday(){
     </div>`;
   });
   if (!any) {
-    const msg = { pending:'Nothing left to do. Well spent.', done:'Nothing finished yet. Start a focus timer on any task.', unmeasured:'Every task has an assigned time.', all:'No tasks are scheduled for this day.' }[f];
+    const msg = { pending:'Nothing left to do. Well spent.', done:'Nothing finished yet.', unmeasured:'Every task has a time assigned.', all:'No tasks are scheduled for this day.' }[f];
     h += `<div class="empty">${msg}</div>`;
   }
   h += `<div class="addrow"><button class="btn ghost" data-act="add-task" data-today="1">${I.plus} Add a task to today</button></div>`;
   el.innerHTML = h;
 }
+function renderDash(){
+  const el = $('#tab-dash'), c = cur();
+  if (!c) { el.innerHTML = onbHTML(); return; }
+  const sum = summarize(c), elapsed = Date.now() - c.start;
+  let h = `<div class="wake">
+      <div><div class="wk-l">Woke up</div><div class="wk-t">${fmtTime(c.start)}</div><div class="wk-d">${fmtDate(c.start)}</div></div>
+      <div><div class="wk-l">Awake for</div><div class="wk-t" data-elapsed>${fmtDur(elapsed)}</div><div class="wk-d">Until your next wake-up</div></div>
+      <div class="wk-b"><button class="btn sm ghost" data-act="wake-edit">Correct time</button><button class="btn sm" data-act="wake">${I.sunrise} New wake-up</button></div>
+    </div>`;
+  if (elapsed > 20*3600000) h += `<div class="banner"><span style="flex:1">This day has run ${fmtDur(elapsed)}. Log this morning's wake-up to close it and start fresh.</span></div>`;
+  const capLine = `${fp(sum.earned)} of ${fp(sum.cap)} pts ${sum.elapsed > 1440 ? 'this long day can hold' : 'a 24-hour day holds'}`;
+  h += `<div class="dialbox">
+      <div class="dial">${dialSVG(sum)}
+        <div class="dial-c"><div class="dial-n">${scoreNum(sum.score)}<small>pts</small></div>
+        <div class="dial-v v-${sum.verdict}">${VLABEL[sum.verdict]}</div></div>
+      </div>
+      <div class="dial-sub">${capLine}</div>
+      <div class="stats">
+        <div class="stat"><b>${sum.done}/${sum.total}</b><span>Tasks done</span></div>
+        <div class="stat"><b>${fp(sum.possible)}</b><span>Pts assigned</span></div>
+        <div class="stat"><b>${fmtDur(sum.sec*1000)}</b><span>On timer</span></div>
+      </div>
+    </div>`;
+  const need = S.settings.avg - sum.score, needP = S.settings.prod - sum.score;
+  if (needP > 0) h += `<div class="goal">${need > 0 ? `<span><b>${fp(need)}</b> pts to Average (${fmtDur(need*S.settings.mpp*60000)} of tasks)</span>` : ''}<span><b>${fp(needP)}</b> pts to Productive (${fmtDur(needP*S.settings.mpp*60000)} of tasks)</span></div>`;
+  const tasks = cycleTasks(c);
+  const rows = S.categories.map(k => {
+    const ts = tasks.filter(t => t.catId === k.id);
+    return { k, pts: ts.reduce((a, t) => a + earnedFor(t, ent(c, t.id)), 0), n: ts.filter(t => ent(c, t.id).done).length };
+  }).filter(r => r.pts > 0).sort((a, b) => b.pts - a.pts);
+  if (rows.length) {
+    const mx = rows[0].pts;
+    h += `<div class="hsec">Points by category</div><div class="cbars">${rows.map(r =>
+      `<div class="cb"><span class="cb-n">${esc(r.k.name)}</span><span class="cb-b"><i style="width:${Math.max(3, r.pts/mx*100)}%"></i></span><b>${fp(r.pts)}</b></div>`).join('')}</div>`;
+  }
+  el.innerHTML = h;
+}
 function rowHTML(t, e){
   const pts = earnedFor(t, e);
-  let meta;
-  if (e.skip) meta = 'Skipped today';
-  else if (t.minutes) {
-    meta = `${t.minutes} min, worth ${fp(taskPts(t))} pt`;
-    if (!e.done && e.sec > 0) meta += `, ${fmtDur(e.sec*1000)} focused`;
-    if (e.done && S.settings.requireFocus && !e.via) meta += ', <span class="warn">ticked without timer</span>';
-  } else meta = '<span class="warn">Not measured yet</span>';
+  let tm;
+  if (e.skip) tm = '<span class="tmin">skip</span>';
+  else if (!t.minutes) tm = '<span class="tmin un">—</span>';
+  else if (!e.done && e.sec > 0) tm = `<span class="tmin">${Math.floor(e.sec/60)}/${t.minutes}m</span>`;
+  else tm = `<span class="tmin">${t.minutes}m</span>`;
   const live = S.timer && S.timer.tid === t.id;
   const go = (e.skip || e.done) ? '<span></span>'
     : t.minutes ? `<button class="go" data-act="go" data-id="${t.id}" aria-label="Start focus timer for ${esc(t.name)}">${I.play}</button>`
     : `<button class="go measure" data-act="go" data-id="${t.id}" aria-label="Measure ${esc(t.name)} with stopwatch">${I.watch}</button>`;
   return `<div class="row${e.done?' done':''}${e.skip?' skip':''}${live?' live':''}">
     <button class="chk${e.done?' on':''}" data-act="chk" data-id="${t.id}" aria-pressed="${e.done}" aria-label="Mark ${esc(t.name)} done">${I.check}</button>
-    <button class="rmain" data-act="row" data-id="${t.id}"><span class="tname">${esc(t.name)}</span><span class="tmeta">${meta}</span></button>
-    <span class="tpts${pts>0?' has':''}">${fp(pts)}</span>${go}</div>`;
+    <button class="rmain" data-act="row" data-id="${t.id}" title="${esc(t.name)}"><span class="tname">${esc(t.name)}</span></button>
+    ${tm}<span class="tpts${pts>0?' has':''}">${fp(pts)}</span>${go}</div>`;
 }
 function toggleDone(id){
   const c = cur(); if (!c) return;
@@ -850,31 +915,54 @@ function toggleDone(id){
   if (S.timer && S.timer.tid === id) { toast('Finish or stop the running timer first'); return; }
   e.skip = false; e.done = !e.done;
   if (!e.done) e.via = false;
-  else if (!t.minutes) toast('Done. Measure this task once to give it points.');
-  else if (S.settings.requireFocus && !e.via) toast(e.sec > 0 ? `Done. ${fp(earnedFor(t,e))} pt from focused time.` : 'Done. Points only come from the focus timer, so 0 pt counted.');
   save(); renderAll();
+  if (e.done) {
+    if (!t.minutes) { taskSheet(id, true); }
+    else toast(`${t.name} done, +${fp(taskPts(t))} pts`);
+  }
 }
-function taskSheet(id){
+function setMinutes(id, m){
+  const t = taskById(id); if (!t) return;
+  t.minutes = m; save(true); closeSheet(); renderAll();
+  const c = cur(), e = c && c.entries[id];
+  toast(`${t.name}: ${m} min = ${fp(taskPts(t))} pts${e && e.done ? ' counted' : ''}`);
+}
+function taskSheet(id, askTime){
   const t = taskById(id); if (!t) return;
   const c = cur(), e = c ? ent(c, id) : blank();
   const left = t.minutes ? Math.max(1, Math.round(t.minutes - e.sec/60)) : 0;
+  const quick = [5, 10, 15, 20, 30, 45, 60];
+  let h = shHead(esc(t.name), esc(catName(t)), true);
+  if (askTime) h += `<p class="hint" style="margin:-4px 0 12px;color:var(--good);font-weight:600">Marked done. Add its time so the points count.</p>`;
+  h += `<div class="tbox"><div class="tbox-l">Time for this task${t.minutes ? `<span>now ${t.minutes} min, ${fp(taskPts(t))} pts</span>` : '<span>not set yet</span>'}</div>
+    <div class="tbox-r"><input type="number" id="ts-min" min="1" step="1" inputmode="numeric" placeholder="Minutes" value="${t.minutes || ''}" aria-label="Minutes">
+    <button class="btn" id="ts-ok">Save</button></div>
+    <p class="hint" id="ts-pts" style="margin:6px 0 8px"></p>
+    <div class="qk">${quick.map(q => `<button class="chip${t.minutes===q?' on':''}" data-q="${q}">${q}m</button>`).join('')}</div></div>`;
   let a = '';
-  if (c && t.minutes && !e.done && !e.skip) a += `<button class="act" data-s="focus">${I.play}<span>Start focus timer<small>${e.sec > 0 ? `${left} min left of ${t.minutes}` : `${t.minutes} min for ${fp(taskPts(t))} pt`}</small></span></button>`;
+  if (c) a += `<button class="act" data-s="done">${e.done ? I.undo : I.check}<span>${e.done ? 'Mark as not done' : 'Mark done'}${!e.done && t.minutes ? `<small>Adds ${fp(taskPts(t))} pts</small>` : ''}</span></button>`;
+  if (c && t.minutes && !e.done && !e.skip) a += `<button class="act" data-s="focus">${I.play}<span>Start focus timer<small>${e.sec > 0 ? `${left} min left of ${t.minutes}` : `Optional countdown of ${t.minutes} min`}</small></span></button>`;
   a += `<button class="act" data-s="watch">${I.watch}<span>${t.minutes ? 'Measure again with stopwatch' : 'Measure with stopwatch'}<small>Find how long it really takes</small></span></button>`;
   if (c) {
-    a += `<button class="act" data-s="done">${e.done ? I.undo : I.check}<span>${e.done ? 'Mark as not done' : 'Mark done without timer'}</span></button>`;
-    a += `<button class="act" data-s="skip">${e.skip ? I.undo : I.skip}<span>${e.skip ? 'Bring back to today' : 'Skip for today'}<small>${e.skip ? '' : "Won't count against the day"}</small></span></button>`;
+    a += `<button class="act" data-s="skip">${e.skip ? I.undo : I.skip}<span>${e.skip ? 'Bring back to today' : 'Skip for today'}</span></button>`;
     if (e.sec > 0 || e.done) a += `<button class="act" data-s="reset">${I.undo}<span>Reset today's progress</span></button>`;
   }
   a += `<button class="act" data-s="edit">${I.edit}<span>Edit task<small>${esc(repeatText(t.repeat))}</small></span></button>`;
-  openSheet(shHead(esc(t.name), esc(catName(t)) + (t.minutes ? ` — ${t.minutes} min` : ''), true) + `<div class="acts">${a}</div>`, b => {
+  openSheet(h + `<div class="acts">${a}</div>`, b => {
+    const inp = $('#ts-min', b);
+    const upd = () => { const m = +inp.value; $('#ts-pts', b).textContent = m > 0 ? `= ${fp(m / S.settings.mpp)} pts` : 'Type minutes or tap a quick time.'; };
+    inp.oninput = upd; upd();
+    inp.onkeydown = ev => { if (ev.key === 'Enter') $('#ts-ok', b).click(); };
+    $('#ts-ok', b).onclick = () => { const m = Math.round(+inp.value); if (!(m >= 1)) { toast('Enter at least 1 minute'); return; } setMinutes(id, m); };
+    $$('[data-q]', b).forEach(q => q.onclick = () => setMinutes(id, +q.dataset.q));
+    if (askTime) setTimeout(() => inp.focus(), 260);
     $$('[data-s]', b).forEach(btn => btn.onclick = () => {
       const k = btn.dataset.s;
       if (k === 'edit') { taskForm(id); return; }
       closeSheet();
       if (k === 'focus') startFocus(id);
       else if (k === 'watch') startWatch(id);
-      else if (k === 'done') toggleDone(id);
+      else if (k === 'done') setTimeout(() => toggleDone(id), 60);
       else if (k === 'skip') { if (S.timer && S.timer.tid === id) { toast('Stop the running timer first'); return; } const x = ent(c, id, true); x.skip = !x.skip; if (x.skip) x.done = false; save(); renderAll(); }
       else if (k === 'reset') { if (S.timer && S.timer.tid === id) { toast('Stop the running timer first'); return; } const x = ent(c, id, true); Object.assign(x, {done:false, via:false, sec:0, skip:false}); save(); renderAll(); }
     });
@@ -914,8 +1002,8 @@ function wakeSheet(edit){
       save(true); closeSheet(); renderAll();
     }; });
 }
-function startDay(){
-  const d = $('#o-date').value, tm = $('#o-time').value;
+function startDay(btn){
+  const box = btn.closest('.onb'); const d = $('.o-date', box).value, tm = $('.o-time', box).value;
   if (!d || !tm) { toast('Pick a date and time'); return; }
   const ts = toTs(d, tm);
   if (ts > Date.now() + 60000) { toast("Wake-up time can't be in the future"); return; }
@@ -952,7 +1040,7 @@ function renderFocus(){
   }
   const c = cur();
   let h = `<div class="idle"><h2>Focus</h2>
-    <p>Measured tasks run a countdown for their assigned time and earn points. New tasks run the stopwatch first so you learn how long they take.</p>
+    <p>Optional. Run a countdown for a task's assigned time, or a stopwatch to find how long a new task takes. Ticking a task done on Today also earns its points.</p>
     <button class="btn wide ghost" data-act="t-watch">${I.watch} Start a free stopwatch</button>`;
   if (!c) {
     h += `<div class="empty">Log your wake-up time on Today to start earning points.</div></div>`;
@@ -1270,7 +1358,6 @@ function settingsSheet(){
     <div class="two"><label class="f"><span>Productive from</span><input type="number" id="st-prod" min="1" step="1" value="${s.prod}"></label>
     <label class="f"><span>Average from</span><input type="number" id="st-avg" min="0" step="1" value="${s.avg}"></label></div>
     <p class="hint">The day's score is the points you earn between one wake-up and the next. A day longer than 24 hours can hold a little over 100, a shorter one a little under.</p>
-    <div class="switch-row"><div><b>Points need the focus timer</b><span>A plain tick earns only the time you actually focused.</span></div><input type="checkbox" id="st-rf"${s.requireFocus?' checked':''}></div>
     <div class="sect">Timer</div>
     <div class="switch-row"><div><b>Chime when time is up</b></div><input type="checkbox" id="st-snd"${s.sound?' checked':''}></div>
     <div class="switch-row"><div><b>Vibrate when time is up</b></div><input type="checkbox" id="st-vib"${s.vibrate?' checked':''}></div>
@@ -1292,7 +1379,7 @@ function settingsSheet(){
       if (!(pd >= 1)) { toast('Points for 24 hours must be 1 or more'); return; }
       const mpp = 1440 / pd;
       if (!(prod > avg && avg >= 0)) { toast('Productive must start above Average'); return; }
-      Object.assign(s, { mpp, prod, avg, requireFocus:$('#st-rf', b).checked, sound:$('#st-snd', b).checked, vibrate:$('#st-vib', b).checked, awake:$('#st-awk', b).checked });
+      Object.assign(s, { mpp, prod, avg, sound:$('#st-snd', b).checked, vibrate:$('#st-vib', b).checked, awake:$('#st-awk', b).checked });
       if (!s.awake) letSleep(); else keepAwake();
       save(true); closeSheet(); renderAll(); toast('Settings saved');
     };
@@ -1335,7 +1422,7 @@ function importSheet(){
 }
 
 /* ---------- Render & events ---------- */
-function renderAll(){ renderToday(); renderFocus(); renderLib(); renderHist(); updateTimer(); }
+function renderAll(){ renderToday(); renderDash(); renderFocus(); renderLib(); renderHist(); updateTimer(); }
 
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -1345,7 +1432,7 @@ document.addEventListener('click', e => {
     case 'close': closeSheet(); break;
     case 'theme': S.settings.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; applyTheme(); save(); break;
     case 'settings': settingsSheet(); break;
-    case 'start-day': startDay(); break;
+    case 'start-day': startDay(b); break;
     case 'wake': wakeSheet(false); break;
     case 'wake-edit': wakeSheet(true); break;
     case 'chk': toggleDone(id); break;
@@ -1379,7 +1466,7 @@ document.addEventListener('click', e => {
 })();
 $('#libq').addEventListener('input', e => { libQ = e.target.value; renderLib(); });
 window.addEventListener('scroll', () => $('#top').classList.toggle('scrolled', window.scrollY > 4), {passive:true});
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tick(); keepAwake(); if (curTab === 'today') renderToday(); } else save(true); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tick(); keepAwake(); if (!sheetOpen) { renderToday(); renderDash(); } } else save(true); });
 window.addEventListener('pagehide', () => save(true));
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen) closeSheet(); });
 
@@ -1395,7 +1482,7 @@ if (S.timer && S.timer.mode === 'focus' && S.timer.running && tElapsed() >= S.ti
 renderAll();
 if (S.timer && S.timer.running) keepAwake();
 setInterval(tick, 500);
-setInterval(() => { if (curTab === 'today' && !sheetOpen && cur()) renderToday(); }, 60000);
+setInterval(() => { if (sheetOpen || !cur()) return; if (curTab === 'today') renderToday(); else if (curTab === 'dash') renderDash(); }, 60000);
 })();
 </script>
 </body>
