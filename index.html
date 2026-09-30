@@ -73,7 +73,7 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .txtbtn{color:var(--accent);font-weight:600;font-size:13.5px;padding:6px 2px}
 label.f{display:block;margin:0 0 14px;font-size:13px;font-weight:600;color:var(--muted)}
 label.f > span{display:block;margin-bottom:6px}
-input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{width:100%;height:46px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:500 15px var(--sans)}
+input[type=text],input[type=search],input[type=number],input[type=date],input[type=time],select,textarea{width:100%;height:46px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:500 15px var(--sans)}
 input[type=number]{font-family:var(--mono);font-weight:700}
 textarea{height:120px;padding:10px 12px;font:13px/1.4 var(--mono);resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -261,6 +261,30 @@ textarea{height:120px;padding:10px 12px;font:13px/1.4 var(--mono);resize:vertica
 .cb b{font:700 12.5px var(--mono)}
 nav.bn button{font-size:11px}
 
+/* Search, sort & filter */
+.tools{display:flex;gap:8px;margin-top:8px}
+.sbox{flex:1;position:relative;display:flex;align-items:center;min-width:0}
+.sbox > svg{position:absolute;left:11px;width:17px;height:17px;color:var(--muted);pointer-events:none}
+.sbox input{height:40px;padding:0 36px 0 36px;border-radius:10px;background:var(--surface);font-size:14.5px}
+.sbox input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.sclr{position:absolute;right:4px;width:32px;height:32px;display:grid;place-items:center;color:var(--muted)}
+.sclr svg{width:16px;height:16px}
+.fbtn{flex:none;width:44px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.fbtn svg{width:20px;height:20px}
+.fbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.showline{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:26px;font-size:12.5px;color:var(--muted);margin:0 2px}
+.showline b{font-weight:600;color:var(--accent)}
+.showline .txtbtn{padding:2px;font-size:12.5px;flex:none}
+#tab-today .cat.flat{margin-top:2px}
+#tab-today .cat.flat .row:first-child,.lcat.open > .lrow:first-child{border-top:0}
+#tab-tasks .tools{margin-top:8px}
+#tab-tasks .addrow{margin-top:8px}
+#tab-tasks .showline{margin-top:6px}
+.fg{margin-bottom:16px}
+.fg-t{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts .chip{height:34px}
+
 /* Calendar */
 .cal{margin-top:8px;padding:12px 10px 10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;touch-action:pan-y}
 .cal-h{display:flex;align-items:center;gap:6px;padding:0 2px 10px}
@@ -370,12 +394,20 @@ nav.bn button .dot{position:absolute;top:10px;left:calc(50% + 8px);width:8px;hei
 </header>
 
 <main class="wrap">
-  <section class="tab on" id="tab-today"></section>
+  <section class="tab on" id="tab-today">
+    <div id="td-head"></div>
+    <div id="td-tools" hidden><div class="tools">
+      <label class="sbox"><span data-i="search"></span><input type="search" id="tq" placeholder="Search today's tasks" autocomplete="off" aria-label="Search today's tasks"><button type="button" class="sclr" data-act="q-clear" data-q="tq" aria-label="Clear search" hidden><span data-i="close"></span></button></label>
+      <button class="fbtn" id="td-sort" data-act="td-sort" aria-label="Sort and filter"><span data-i="sliders"></span></button>
+    </div></div>
+    <div id="td-list"></div>
+  </section>
   <section class="tab" id="tab-dash"></section>
   <section class="tab" id="tab-focus"></section>
   <section class="tab" id="tab-tasks">
-    <div class="libbar">
-      <input type="text" id="libq" placeholder="Search tasks" autocomplete="off" aria-label="Search tasks">
+    <div class="tools">
+      <label class="sbox"><span data-i="search"></span><input type="search" id="libq" placeholder="Search all tasks" autocomplete="off" aria-label="Search all tasks"><button type="button" class="sclr" data-act="q-clear" data-q="libq" aria-label="Clear search" hidden><span data-i="close"></span></button></label>
+      <button class="fbtn" id="lib-sort" data-act="lib-sort" aria-label="Sort and filter"><span data-i="sliders"></span></button>
     </div>
     <div class="addrow">
       <button class="btn ghost" data-act="add-cat"><span data-i="plus"></span>New category</button>
@@ -453,6 +485,8 @@ const I = {
   moon: sv('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'),
   today: sv('<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 4.5v3M4.6 9.6l2 1.6M19.4 9.6l-2 1.6"/>'),
   gauge: sv('<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 17l4.5-5.5"/><circle cx="12" cy="17" r="1.3" fill="currentColor"/>'),
+  search: sv('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
+  sliders: sv('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
   timer: sv('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5l3-3M10 2.5h4"/>'),
   list: sv('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="3"/>'),
   chart: sv('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
@@ -495,7 +529,7 @@ const defaults = () => ({
   v:2,
   settings:{ mpp:14.4, prod:75, avg:50, sound:true, vibrate:true, awake:true, theme:null },
   categories:[], tasks:[], cycles:[], timer:null,
-  ui:{ open:{}, libOpen:{}, filter:'pending' }
+  ui:{ open:{}, libOpen:{}, tStatus:'pending', tTime:'any', tSort:'cat', tCat:'all', lTime:'any', lRep:'any', lSort:'cat', lCat:'all' }
 });
 function seed(s){
   SEED.forEach(([cat, list]) => {
@@ -513,6 +547,9 @@ function load(){
       S.settings = Object.assign(defaults().settings, d.settings||{});
       S.ui = Object.assign(defaults().ui, d.ui||{});
       migrate(d); delete S.settings.requireFocus;
+      if (S.ui.filter) { const f = S.ui.filter; if (f === 'unmeasured') { S.ui.tStatus = 'all'; S.ui.tTime = 'none'; } else S.ui.tStatus = f; delete S.ui.filter; }
+      if (!S.categories.some(k => k.id === S.ui.tCat)) S.ui.tCat = 'all';
+      if (!S.categories.some(k => k.id === S.ui.lCat)) S.ui.lCat = 'all';
       S.cycles.forEach(c => { if (c.end && !c.final) { c.items = c.items || []; c.final = finalFromItems(c); } });
       return;
     } catch(e){}
@@ -801,61 +838,120 @@ function onbHTML(){
       </div></div>`;
 }
 const scoreNum = x => (Math.round(x*10)/10).toFixed(1);
-function renderToday(){
-  const el = $('#tab-today'), c = cur();
-  const sub = $('#hdr-sub');
-  if (!c) { sub.textContent = 'No day running'; el.innerHTML = onbHTML(); return; }
-  sub.textContent = 'Day of ' + fmtDate(c.start);
-  const sum = summarize(c), tasks = cycleTasks(c);
-  const f = S.ui.filter;
-  const counts = { pending:0, done:0, all:0, unmeasured:0 };
-  const pass = (t, e) => {
-    if (f === 'pending') return !e.done && !e.skip;
-    if (f === 'done') return e.done;
-    if (f === 'unmeasured') return !t.minutes && !e.skip;
-    return true;
-  };
-  tasks.forEach(t => { const e = ent(c, t.id); counts.all++; if (e.done) counts.done++; else if (!e.skip) counts.pending++; if (!t.minutes && !e.skip) counts.unmeasured++; });
-  const allOpen = S.categories.every(k => S.ui.open[k.id]);
+/* ---- Today: search, filter, sort ---- */
+let tdQ = '';
+const SORTS_T = [['cat','Category'],['tdesc','Longest first'],['tasc','Shortest first'],['pts','Most points'],['name','Name A–Z']];
+const SORTS_L = [['cat','Category'],['tdesc','Longest first'],['tasc','Shortest first'],['name','Name A–Z']];
+const sortLabel = (list, k) => (list.find(x => x[0] === k) || list[0])[1];
+function sortTasks(arr, key, earnedOf){
+  const byName = (a, b) => a.name.localeCompare(b.name, 'en', {sensitivity:'base'});
+  const a = arr.slice();
+  if (key === 'tdesc') a.sort((x, y) => (y.minutes||-1) - (x.minutes||-1) || byName(x, y));
+  else if (key === 'tasc') a.sort((x, y) => (x.minutes||Infinity) - (y.minutes||Infinity) || byName(x, y));
+  else if (key === 'pts') a.sort((x, y) => earnedOf(y) - earnedOf(x) || (y.minutes||0) - (x.minutes||0) || byName(x, y));
+  else if (key === 'name') a.sort(byName);
+  return a;
+}
+const QUICK = [['pending','any','To do'],['done','any','Done'],['all','set','Time set'],['all','none','No time'],['all','any','All']];
+function tdPass(c, t, st, tm, cat){
+  const e = ent(c, t.id);
+  if (st === 'pending' && (e.done || e.skip)) return false;
+  if (st === 'done' && !e.done) return false;
+  if (st === 'skipped' && !e.skip) return false;
+  if (tm === 'set' && !t.minutes) return false;
+  if (tm === 'none' && t.minutes) return false;
+  if (cat !== 'all' && t.catId !== cat) return false;
+  return true;
+}
+const matchQ = (t, q) => !q || t.name.toLowerCase().includes(q) || catName(t).toLowerCase().includes(q);
+function tdCustom(){ const u = S.ui; return u.tSort !== 'cat' || u.tCat !== 'all' || !QUICK.some(([s, m]) => s === u.tStatus && m === u.tTime); }
 
-  let h = `<button class="strip" data-act="tab" data-tab="dash" aria-label="Open dashboard">
+function renderToday(){
+  const c = cur(), sub = $('#hdr-sub');
+  $('#td-tools').hidden = !c;
+  if (!c) { sub.textContent = 'No day running'; $('#td-head').innerHTML = onbHTML(); $('#td-list').innerHTML = ''; return; }
+  sub.textContent = 'Day of ' + fmtDate(c.start);
+  const sum = summarize(c);
+  $('#td-head').innerHTML = `<button class="strip" data-act="tab" data-tab="dash" aria-label="Open dashboard">
       <span class="s-w">Woke ${fmtTime(c.start)}</span>
       <span class="s-p"><b>${scoreNum(sum.score)}</b> pts</span>
       <span class="pill v-${sum.verdict}">${VLABEL[sum.verdict]}</span>
       <span class="s-d">${sum.done}/${sum.total}</span>
-      <span class="chev">${I.chev}</span></button>
-    <div class="chips" role="tablist">
-      ${[['pending','To do'],['done','Done'],['unmeasured','No time'],['all','All']].map(([k,l]) =>
-        `<button class="chip${f===k?' on':''}" data-act="filter" data-f="${k}" role="tab" aria-selected="${f===k}">${l}<em>${counts[k]}</em></button>`).join('')}
-      <button class="chip" data-act="toggle-all">${allOpen ? 'Collapse all' : 'Expand all'}</button>
-    </div>`;
+      <span class="chev">${I.chev}</span></button>`;
+  renderTodayList();
+}
+function renderTodayList(){
+  const c = cur(); if (!c) return;
+  const u = S.ui, q = tdQ.trim().toLowerCase(), tasks = cycleTasks(c);
+  $('#td-sort').classList.toggle('on', tdCustom());
+  const cnt = (s, m) => tasks.filter(t => tdPass(c, t, s, m, u.tCat) && matchQ(t, q)).length;
+  const shown = tasks.filter(t => tdPass(c, t, u.tStatus, u.tTime, u.tCat) && matchQ(t, q));
+  const flat = u.tSort !== 'cat' || !!q;
+  const autoOpen = u.tCat !== 'all' || ((u.tStatus !== 'pending' || u.tTime !== 'any') && shown.length <= 30);
+  const allOpen = S.categories.every(k => S.ui.open[k.id]);
+  let h = `<div class="chips" role="tablist">
+    ${QUICK.map(([s, m, l]) => { const on = u.tStatus === s && u.tTime === m;
+      return `<button class="chip${on?' on':''}" data-act="quick" data-s="${s}" data-m="${m}" role="tab" aria-selected="${on}">${l}<em>${cnt(s, m)}</em></button>`; }).join('')}
+    ${flat ? '' : `<button class="chip" data-act="toggle-all">${allOpen ? 'Collapse all' : 'Expand all'}</button>`}
+  </div>`;
+  const mins = shown.reduce((a, t) => a + (t.minutes||0), 0);
+  const pts = shown.reduce((a, t) => a + earnedFor(t, ent(c, t.id)), 0);
+  const bits = [];
+  if (u.tCat !== 'all') { const k = catById(u.tCat); if (k) bits.push(esc(k.name)); }
+  if (u.tStatus === 'skipped') bits.push('skipped');
+  if (u.tSort !== 'cat') bits.push(sortLabel(SORTS_T, u.tSort).toLowerCase());
+  h += `<div class="showline"><span>${shown.length} task${shown.length===1?'':'s'}${mins ? `, ${fmtDur(mins*60000)}` : ''}${pts ? `, ${fp(pts)} pts earned` : ''}${bits.length ? ` <b>· ${bits.join(', ')}</b>` : ''}</span>${tdCustom() ? '<button class="txtbtn" data-act="td-reset">Reset</button>' : ''}</div>`;
 
-  let any = false;
-  S.categories.forEach(cat => {
-    const all = tasks.filter(t => t.catId === cat.id);
-    if (!all.length) return;
-    const shown = all.filter(t => pass(t, ent(c, t.id)));
-    if (!shown.length) return;
-    any = true;
-    const act = all.filter(t => !ent(c, t.id).skip);
-    const dn = act.filter(t => ent(c, t.id).done).length;
-    const pts = all.reduce((a, t) => a + earnedFor(t, ent(c, t.id)), 0);
-    const open = !!S.ui.open[cat.id];
-    h += `<div class="cat${open?' open':''}">
-      <button class="cat-h" data-act="cat" data-cid="${cat.id}" aria-expanded="${open}">
-        <span class="chev">${I.chev}</span><span class="nm">${esc(cat.name)}</span><span class="ct">${dn}/${act.length}</span><span class="cp">${fp(pts)}</span>
-      </button>
-      <div class="bar"><i style="width:${act.length ? dn/act.length*100 : 0}%"></i></div>
-      ${open ? shown.map(t => rowHTML(t, ent(c, t.id))).join('') : ''}
-    </div>`;
-  });
-  if (!any) {
-    const msg = { pending:'Nothing left to do. Well spent.', done:'Nothing finished yet.', unmeasured:'Every task has a time assigned.', all:'No tasks are scheduled for this day.' }[f];
-    h += `<div class="empty">${msg}</div>`;
+  if (!shown.length) {
+    h += `<div class="empty">${q ? `No task matches "${esc(tdQ.trim())}"${u.tStatus !== 'all' || u.tTime !== 'any' ? ' in this view. Try the All chip' : ''}.` : u.tStatus === 'pending' && u.tTime === 'any' ? 'Nothing left to do. Well spent.' : 'No tasks match these filters.'}</div>`;
+  } else if (flat) {
+    const list = sortTasks(shown, u.tSort, t => earnedFor(t, ent(c, t.id)));
+    h += `<div class="cat open flat">${list.map(t => rowHTML(t, ent(c, t.id), true)).join('')}</div>`;
+  } else {
+    S.categories.forEach(cat => {
+      const all = tasks.filter(t => t.catId === cat.id);
+      const vis = shown.filter(t => t.catId === cat.id);
+      if (!vis.length) return;
+      const act = all.filter(t => !ent(c, t.id).skip);
+      const dn = act.filter(t => ent(c, t.id).done).length;
+      const p = all.reduce((a, t) => a + earnedFor(t, ent(c, t.id)), 0);
+      const open = !!S.ui.open[cat.id] || autoOpen;
+      h += `<div class="cat${open?' open':''}">
+        <button class="cat-h" data-act="cat" data-cid="${cat.id}" aria-expanded="${open}">
+          <span class="chev">${I.chev}</span><span class="nm">${esc(cat.name)}</span><span class="ct">${dn}/${act.length}</span><span class="cp">${fp(p)}</span>
+        </button>
+        <div class="bar"><i style="width:${act.length ? dn/act.length*100 : 0}%"></i></div>
+        ${open ? vis.map(t => rowHTML(t, ent(c, t.id))).join('') : ''}
+      </div>`;
+    });
   }
   h += `<div class="addrow"><button class="btn ghost" data-act="add-task" data-today="1">${I.plus} Add a task to today</button></div>`;
-  el.innerHTML = h;
+  $('#td-list').innerHTML = h;
 }
+function optGroup(title, key, opts, cur){
+  return `<div class="fg"><div class="fg-t">${title}</div><div class="opts">${opts.map(([v, l]) =>
+    `<button class="chip${cur===v?' on':''}" data-k="${key}" data-v="${v}" aria-pressed="${cur===v}">${l}</button>`).join('')}</div></div>`;
+}
+function catSelect(id, curv){
+  return `<div class="fg"><div class="fg-t">Category</div><select id="${id}"><option value="all">All categories</option>${S.categories.map(k => `<option value="${k.id}"${curv===k.id?' selected':''}>${esc(k.name)}</option>`).join('')}</select></div>`;
+}
+function tdSortSheet(){
+  const u = S.ui;
+  openSheet(shHead('Sort &amp; filter', "Today's tasks") +
+    optGroup('Show', 'tStatus', [['pending','To do'],['done','Done'],['skipped','Skipped'],['all','All']], u.tStatus) +
+    optGroup('Time', 'tTime', [['any','Any'],['set','Time set'],['none','No time yet']], u.tTime) +
+    optGroup('Sort by', 'tSort', SORTS_T, u.tSort) +
+    catSelect('tf-catsel', u.tCat) +
+    `<div class="sh-foot"><button class="btn ghost" id="sf-reset">Reset</button><button class="btn" data-act="close">Show&nbsp;<span id="sf-n"></span></button></div>`,
+  b => {
+    const n = () => { const c = cur(); const k = c ? cycleTasks(c).filter(t => tdPass(c, t, u.tStatus, u.tTime, u.tCat) && matchQ(t, tdQ.trim().toLowerCase())).length : 0; $('#sf-n', b).textContent = `${k} task${k===1?'':'s'}`; };
+    $$('[data-k]', b).forEach(x => x.onclick = () => { u[x.dataset.k] = x.dataset.v; save(); renderTodayList(); tdSortSheet(); });
+    $('#tf-catsel', b).onchange = e => { u.tCat = e.target.value; save(); renderTodayList(); n(); };
+    $('#sf-reset', b).onclick = () => { Object.assign(u, {tStatus:'pending', tTime:'any', tSort:'cat', tCat:'all'}); save(); renderTodayList(); tdSortSheet(); };
+    n();
+  });
+}
+
 function renderDash(){
   const el = $('#tab-dash'), c = cur();
   if (!c) { el.innerHTML = onbHTML(); return; }
@@ -997,7 +1093,7 @@ function wakeSheet(edit){
           setTimeout(() => toast(`Previous day closed at ${fmtScore(fin)}: ${VLABEL[fin.verdict]}`), 300);
         }
         S.cycles.push({ id:uid(), start:ts, end:null, entries:{} });
-        S.ui.filter = 'pending';
+        S.ui.tStatus = 'pending'; S.ui.tTime = 'any';
       }
       save(true); closeSheet(); renderAll();
     }; });
@@ -1224,27 +1320,67 @@ function catForm(cid){
 }
 
 /* ---------- Library ---------- */
+function libPass(t){
+  const u = S.ui;
+  if (u.lTime === 'set' && !t.minutes) return false;
+  if (u.lTime === 'none' && t.minutes) return false;
+  if (u.lRep !== 'any' && ((t.repeat||{type:'daily'}).type) !== u.lRep) return false;
+  if (u.lCat !== 'all' && t.catId !== u.lCat) return false;
+  return true;
+}
+const libCustom = () => { const u = S.ui; return u.lTime !== 'any' || u.lRep !== 'any' || u.lSort !== 'cat' || u.lCat !== 'all'; };
+const lrowHTML = (t, withCat) => `<button class="lrow" data-act="edit-task" data-id="${t.id}"><span class="tname">${esc(t.name)}</span>
+  <span class="rp">${t.minutes ? `<b>${t.minutes} min</b><b>${fp(taskPts(t))} pt</b>` : '<span class="un">No time yet</span>'}<span>${esc(repeatText(t.repeat))}</span>${withCat ? `<span>${esc(catName(t))}</span>` : ''}</span></button>`;
 function renderLib(){
-  const q = libQ.trim().toLowerCase();
-  let h = '';
-  S.categories.forEach(k => {
-    const all = S.tasks.filter(t => !t.archived && t.catId === k.id);
-    const list = q ? all.filter(t => t.name.toLowerCase().includes(q)) : all;
-    if (q && !list.length && !k.name.toLowerCase().includes(q)) return;
-    const open = q ? true : !!S.ui.libOpen[k.id];
-    const unm = all.filter(t => !t.minutes).length;
-    h += `<div class="lcat${open?' open':''}"><div class="lcat-h">
-      <button class="tg" data-act="lib-cat" data-cid="${k.id}" aria-expanded="${open}"><span class="chev">${I.chev}</span><span class="nm">${esc(k.name)}</span><span class="ct">${all.length} task${all.length===1?'':'s'}${unm ? `, ${unm} to measure` : ''}</span></button>
-      <button class="ibtn" data-act="edit-cat" data-cid="${k.id}" aria-label="Options for ${esc(k.name)}">${I.more}</button></div>`;
-    if (open) {
-      h += list.map(t => `<button class="lrow" data-act="edit-task" data-id="${t.id}"><span class="tname">${esc(t.name)}</span>
-        <span class="rp">${t.minutes ? `<b>${t.minutes} min</b><b>${fp(taskPts(t))} pt</b>` : '<span class="un">Not measured</span>'}<span>${esc(repeatText(t.repeat))}</span></span></button>`).join('');
-      h += `<button class="laddr" data-act="add-task" data-cid="${k.id}">${I.plus} Add task to ${esc(k.name)}</button>`;
-    }
-    h += '</div>';
-  });
-  if (!h) h = `<div class="empty">${q ? 'No tasks match that search.' : 'No categories yet. Add one to begin.'}</div>`;
+  const u = S.ui, q = libQ.trim().toLowerCase();
+  $('#lib-sort').classList.toggle('on', libCustom());
+  const active = S.tasks.filter(t => !t.archived);
+  const shown = active.filter(t => libPass(t) && matchQ(t, q));
+  const filtering = !!q || u.lTime !== 'any' || u.lRep !== 'any' || u.lCat !== 'all';
+  const bits = [];
+  if (u.lTime === 'set') bits.push('time set'); if (u.lTime === 'none') bits.push('no time');
+  if (u.lRep !== 'any') bits.push({daily:'every day',weekly:'weekdays',interval:'every few days',once:'one date',none:'not repeating'}[u.lRep]);
+  if (u.lCat !== 'all') { const k = catById(u.lCat); if (k) bits.push(esc(k.name)); }
+  if (u.lSort !== 'cat') bits.push(sortLabel(SORTS_L, u.lSort).toLowerCase());
+  const mins = shown.reduce((a, t) => a + (t.minutes||0), 0);
+  let h = `<div class="showline"><span>${shown.length} of ${active.length} tasks${mins ? `, ${fmtDur(mins*60000)} total` : ''}${bits.length ? ` <b>· ${bits.join(', ')}</b>` : ''}</span>${libCustom() ? '<button class="txtbtn" data-act="lib-reset">Reset</button>' : ''}</div>`;
+  if (!shown.length && (filtering)) {
+    h += `<div class="empty">No tasks match${q ? ` "${esc(libQ.trim())}"` : ''}${libCustom() ? `${q ? ' with' : ''} these filters` : ''}.</div>`;
+  } else if (u.lSort !== 'cat') {
+    h += `<div class="lcat open">${sortTasks(shown, u.lSort, t => taskPts(t)).map(t => lrowHTML(t, true)).join('')}</div>`;
+  } else {
+    S.categories.forEach(k => {
+      const all = active.filter(t => t.catId === k.id);
+      const list = all.filter(t => libPass(t) && matchQ(t, q));
+      if (filtering && !list.length && !(q && k.name.toLowerCase().includes(q) && u.lCat === 'all')) return;
+      const open = filtering ? true : !!S.ui.libOpen[k.id];
+      const unm = all.filter(t => !t.minutes).length;
+      h += `<div class="lcat${open?' open':''}"><div class="lcat-h">
+        <button class="tg" data-act="lib-cat" data-cid="${k.id}" aria-expanded="${open}"><span class="chev">${I.chev}</span><span class="nm">${esc(k.name)}</span><span class="ct">${all.length} task${all.length===1?'':'s'}${unm ? `, ${unm} no time` : ''}</span></button>
+        <button class="ibtn" data-act="edit-cat" data-cid="${k.id}" aria-label="Options for ${esc(k.name)}">${I.more}</button></div>`;
+      if (open) {
+        h += list.map(t => lrowHTML(t, false)).join('');
+        h += `<button class="laddr" data-act="add-task" data-cid="${k.id}">${I.plus} Add task to ${esc(k.name)}</button>`;
+      }
+      h += '</div>';
+    });
+    if (!S.categories.length) h += `<div class="empty">No categories yet. Add one to begin.</div>`;
+  }
   $('#lib-list').innerHTML = h;
+}
+function libSortSheet(){
+  const u = S.ui;
+  openSheet(shHead('Sort &amp; filter', 'All tasks') +
+    optGroup('Time', 'lTime', [['any','Any'],['set','Time set'],['none','No time yet']], u.lTime) +
+    optGroup('Repeats', 'lRep', [['any','Any'],['daily','Every day'],['weekly','Weekdays'],['interval','Every few days'],['once','One date'],['none','Not repeating']], u.lRep) +
+    optGroup('Sort by', 'lSort', SORTS_L, u.lSort) +
+    catSelect('lf-catsel', u.lCat) +
+    `<div class="sh-foot"><button class="btn ghost" id="lf-reset">Reset</button><button class="btn" data-act="close">Done</button></div>`,
+  b => {
+    $$('[data-k]', b).forEach(x => x.onclick = () => { u[x.dataset.k] = x.dataset.v; save(); renderLib(); libSortSheet(); });
+    $('#lf-catsel', b).onchange = e => { u.lCat = e.target.value; save(); renderLib(); };
+    $('#lf-reset', b).onclick = () => { Object.assign(u, {lTime:'any', lRep:'any', lSort:'cat', lCat:'all'}); save(); renderLib(); libSortSheet(); };
+  });
 }
 
 /* ---------- History ---------- */
@@ -1438,9 +1574,14 @@ document.addEventListener('click', e => {
     case 'chk': toggleDone(id); break;
     case 'row': taskSheet(id); break;
     case 'go': { const t = taskById(id); if (t && t.minutes) startFocus(id); else startWatch(id); break; }
-    case 'cat': S.ui.open[cid] = !S.ui.open[cid]; save(); renderToday(); break;
-    case 'toggle-all': { const all = S.categories.every(k => S.ui.open[k.id]); S.categories.forEach(k => S.ui.open[k.id] = !all); save(); renderToday(); break; }
-    case 'filter': S.ui.filter = b.dataset.f; save(); renderToday(); break;
+    case 'cat': S.ui.open[cid] = !S.ui.open[cid]; save(); renderTodayList(); break;
+    case 'toggle-all': { const all = S.categories.every(k => S.ui.open[k.id]); S.categories.forEach(k => S.ui.open[k.id] = !all); save(); renderTodayList(); break; }
+    case 'quick': S.ui.tStatus = b.dataset.s; S.ui.tTime = b.dataset.m; save(); renderTodayList(); break;
+    case 'td-sort': tdSortSheet(); break;
+    case 'lib-sort': libSortSheet(); break;
+    case 'td-reset': Object.assign(S.ui, {tStatus:'pending', tTime:'any', tSort:'cat', tCat:'all'}); save(); renderTodayList(); break;
+    case 'lib-reset': Object.assign(S.ui, {lTime:'any', lRep:'any', lSort:'cat', lCat:'all'}); save(); renderLib(); break;
+    case 'q-clear': { const inp = $('#' + b.dataset.q); inp.value = ''; inp.dispatchEvent(new Event('input')); inp.focus(); break; }
     case 'add-task': taskForm(null, cid, !!b.dataset.today && !!cur()); break;
     case 'add-cat': catForm(null); break;
     case 'edit-task': taskForm(id); break;
@@ -1464,7 +1605,9 @@ document.addEventListener('click', e => {
   $('#tab-history').addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { const btn = $(`[data-act="cal-m"][data-d="${dx < 0 ? 1 : -1}"]`); if (btn && !btn.disabled) btn.click(); } }, {passive:true});
 })();
-$('#libq').addEventListener('input', e => { libQ = e.target.value; renderLib(); });
+$('#libq').addEventListener('input', e => { libQ = e.target.value; $('[data-q=libq]').hidden = !libQ; renderLib(); });
+$('#tq').addEventListener('input', e => { tdQ = e.target.value; $('[data-q=tq]').hidden = !tdQ; renderTodayList(); });
+$$('input[type=search]').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') i.blur(); }));
 window.addEventListener('scroll', () => $('#top').classList.toggle('scrolled', window.scrollY > 4), {passive:true});
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tick(); keepAwake(); if (!sheetOpen) { renderToday(); renderDash(); } } else save(true); });
 window.addEventListener('pagehide', () => save(true));
